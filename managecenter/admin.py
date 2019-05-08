@@ -7,10 +7,10 @@ from .models import WebSite, WebSiteType
 # Register your models here.
 @admin.register(WebSiteType)
 class MangeWebSite(admin.ModelAdmin):
-    fields = ('name',)
+    list_display = ('name', 'icon', 'rank')
 
 
 @admin.register(WebSite)
 class MangeWebSite(admin.ModelAdmin):
-    fields = ('title', 'type', 'picture_url', )
+    list_display = ('title', 'type', 'logo_url', )
 

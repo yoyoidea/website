@@ -2,20 +2,13 @@
 <html lang="zh">
 
 <head>
-    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
-    </script>
-    <script>
-        (adsbygoogle = window.adsbygoogle || []).push({
-            google_ad_client: "ca-pub-8550836177608334",
-            enable_page_level_ads: true
-        });
-    </script>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="author" content="viggo"/>
     <title>QA网址导航</title>
     {% load static %}
+    {% load website %}
     <link rel="shortcut icon" href="{% static '/images/favicon.png' %}">
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Arimo:400,700,400italic">
     <link rel="stylesheet" href="{% static '/css/fonts/linecons/css/linecons.css' %}">
@@ -41,7 +34,7 @@
             <header class="logo-env">
                 <!-- logo -->
                 <div class="logo">
-                    <a href="/" class="logo-expanded">
+                    <a href="index.html" class="logo-expanded">
                         <img src="{% static '/images/logo@2x.png' %}" width="100%" alt=""/>
                     </a>
                     <a href="/" class="logo-collapsed">
@@ -58,95 +51,128 @@
                 </div>
             </header>
             <ul id="main-menu" class="main-menu">
-                <li>
-                    <a href="#常用推荐" class="smooth">
-                        <i class="linecons-star"></i>
-                        <span class="title">常用推荐</span>
-                    </a>
-                </li>
-                <li>
-                    <a>
-                        <i class="linecons-diamond"></i>
-                        <span class="title">常用工具</span>
-                    </a>
-                    <ul>
-                        <li>
-                            <a href="#图形创意" class="smooth">
-                                <span class="title">图形创意</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#界面设计" class="smooth">
-                                <span class="title">界面设计</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#交互动效" class="smooth">
-                                <span class="title">交互动效</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#在线配色" class="smooth">
-                                <span class="title">在线配色</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#在线工具" class="smooth">
-                                <span class="title">在线工具</span>
-                            </a>
-                        </li>
-                        <!-- <li>
-                                <a href="#Sketch插件" class="smooth">
-                                    <span class="title">Sketch插件</span>
-                                </a>
-                            </li> -->
-                        <li>
-                            <a href="#Chrome插件" class="smooth">
-                                <span class="title">Chrome插件</span>
-                            </a>
-                        </li>
-                        <!-- <li>
-                                <a href="#H5制作" class="smooth">
-                                    <span class="title">H5制作</span>
-                                </a>
-                            </li> -->
-                    </ul>
-                </li>
+                {% for web_site in web_sites %}
+                    <li>
+                        <a href="#{{ web_site.web_site_type.name }}" class="smooth">
+                            <i class={{ web_site.web_site_type.icon }}></i>
+                            <span class="title">{{ web_site.web_site_type.name }}</span>
+                        </a>
+                    </li>
+                {% endfor %}
+
             </ul>
         </div>
     </div>
     <div class="main-content">
-        <!-- 常用推荐 -->
-        <h4 class="text-gray"><i class="linecons-tag" style="margin-right: 7px;" id="常用推荐"></i>常用推荐</h4>
-            <div class="row">
-            {% if web_site_list %}
-                {% for web_site in web_site_list %}
-                    <div class="col-sm-3">
-                        <div class="xe-widget xe-conversations box2 label-info"
-                             onclick="window.open('{{ web_site.url }}', '_blank')" data-toggle="tooltip"
-                             data-placement="bottom" title="" data-original-title="https://dribbble.com/">
-                            <div class="xe-comment-entry">
-                                <a class="xe-user-img">
-                                    <img src="/media/{{ web_site.picture_url }}" class="img-circle" width="40">
-                                </a>
-                                <div class="xe-comment">
-                                    <a href="#" class="xe-user-name overflowClip_1">
-                                        <strong>{{ web_site.title }}</strong>
+        {% for web_site in web_sites %}
+            <h4 class="text-gray"><i class="linecons-tag" style="margin-right: 7px;" id={{ web_site.web_site_type.name }}></i>{{ web_site.web_site_type.name }}</h4>
+            {% for index in web_site.web_site_list|list_range:4 %}
+                <div class="row">
+                    {% if index < web_site.web_site_list|length %}
+                        <div class="col-sm-3">
+                            <div class="xe-widget xe-conversations box2 label-info"
+                                 onclick="window.open('{{ web_site.web_site_list | get_at_index_url:index }}', '_blank')"
+                                 data-toggle="tooltip"
+                                 data-placement="bottom" title=""
+                                 data-original-title='{{ web_site.web_site_list| get_at_index_url:index }}'>
+                                <div class="xe-comment-entry">
+                                    <a class="xe-user-img">
+                                        <img src="/media/{{ web_site.web_site_list | get_at_index_logo_url:index }}"
+                                             class="img-circle" width="40">
                                     </a>
-                                    <p class="overflowClip_2">{{ web_site.describe }}</p>
+                                    <div class="xe-comment">
+                                        <a href="#" class="xe-user-name overflowClip_1">
+                                            <strong>{{ web_site.web_site_list | get_at_index_title:index }}</strong>
+                                        </a>
+                                        <p class="overflowClip_2">{{ web_site.web_site_list| get_at_index_describe:index }}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                {% endfor %}
-            {% endif %}
-       </div>
+                    {% endif %}
+                    {% with new_index=index|add_index:1 %}
+                        {% if new_index < web_site.web_site_list|length %}
+                            <div class="col-sm-3">
+                                <div class="xe-widget xe-conversations box2 label-info"
+                                     onclick="window.open('{{ web_site.web_site_list | get_at_index_url:new_index }}', '_blank')"
+                                     data-toggle="tooltip"
+                                     data-placement="bottom" title=""
+                                     data-original-title='{{ web_site.web_site_list | get_at_index_url:new_index }}'>
+                                    <div class="xe-comment-entry">
+                                        <a class="xe-user-img">
+                                            <img src="/media/{{ web_site.web_site_list | get_at_index_logo_url:new_index }}"
+                                                 class="img-circle" width="40">
+                                        </a>
+                                        <div class="xe-comment">
+                                            <a href="#" class="xe-user-name overflowClip_1">
+                                                <strong>{{ web_site.web_site_list | get_at_index_title:new_index }}</strong>
+                                            </a>
+                                            <p class="overflowClip_2">{{ web_site.web_site_list | get_at_index_describe:new_index }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                    {% with new_index=index|add_index:2 %}
+                        {% if new_index < web_site.web_site_list|length %}
+                            <div class="col-sm-3">
+                                <div class="xe-widget xe-conversations box2 label-info"
+                                     onclick="window.open('{{ web_site.web_site_list | get_at_index_url:new_index }}', '_blank')"
+                                     data-toggle="tooltip"
+                                     data-placement="bottom" title=""
+                                     data-original-title='{{ web_site.web_site_list| get_at_index_url:new_index }}'>
+                                    <div class="xe-comment-entry">
+                                        <a class="xe-user-img">
+                                            <img src="/media/{{ web_site.web_site_list | get_at_index_logo_url:new_index }}"
+                                                 class="img-circle" width="40">
+                                        </a>
+                                        <div class="xe-comment">
+                                            <a href="#" class="xe-user-name overflowClip_1">
+                                                <strong>{{ web_site.web_site_list| get_at_index_title:new_index }}</strong>
+                                            </a>
+                                            <p class="overflowClip_2">{{ web_site.web_site_list | get_at_index_describe:new_index }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                    {% with new_index=index|add_index:3 %}
+                        {% if new_index < web_site.web_site_list|length %}
+                            <div class="col-sm-3">
+                                <div class="xe-widget xe-conversations box2 label-info"
+                                     onclick="window.open('{{ web_site.web_site_list | get_at_index_url:new_index }}', '_blank')"
+                                     data-toggle="tooltip"
+                                     data-placement="bottom" title=""
+                                     data-original-title='{{ web_site.web_site_list | get_at_index_url:new_index }}'>
+                                    <div class="xe-comment-entry">
+                                        <a class="xe-user-img">
+                                            <img src="/media/{{ web_site.web_site_list | get_at_index_logo_url:new_index }}"
+                                                 class="img-circle" width="40">
+                                        </a>
+                                        <div class="xe-comment">
+                                            <a href="#" class="xe-user-name overflowClip_1">
+                                                <strong>{{ web_site.web_site_list| get_at_index_title:new_index }}</strong>
+                                            </a>
+                                            <p class="overflowClip_2">{{ web_site.web_site_list | get_at_index_describe:new_index }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+                <br/>
+            {% endfor %}
+        {% endfor %}
+    </div>
 </div>
 <!-- 锚点平滑移动 -->
 <script type="text/javascript">
     $(document).ready(function () {
         $(document).on('click', '.has-sub', function () {
-            var _this = $(this)
+            let _this = $(this);
             if (!$(this).hasClass('expanded')) {
                 setTimeout(function () {
                     _this.find('ul').attr("style", "")
@@ -154,8 +180,8 @@
 
             } else {
                 $('.has-sub ul').each(function (id, ele) {
-                    var _that = $(this)
-                    if (_this.find('ul')[0] != ele) {
+                    let _that = $(this);
+                    if (_this.find('ul')[0] !== ele) {
                         setTimeout(function () {
                             _that.attr("style", "")
                         }, 300);
@@ -177,7 +203,6 @@
         $("a.smooth").click(function (ev) {
             ev.preventDefault();
 
-            public_vars.$mainMenu.add(public_vars.$sidebarProfile).toggleClass('mobile-is-visible');
             ps_destroy();
             $("html, body").animate({
                 scrollTop: $($(this).attr("href")).offset().top - 30
@@ -189,8 +214,8 @@
         return false;
     });
 
-    var href = "";
-    var pos = 0;
+    let href = "";
+    let pos = 0;
     $("a.smooth").click(function (e) {
         $("#main-menu li").each(function () {
             $(this).removeClass("active");
@@ -199,17 +224,18 @@
         e.preventDefault();
         href = $(this).attr("href");
         pos = $(href).position().top - 30;
+        console.log("xxxx");
     });
 </script>
 <!-- Bottom Scripts -->
-<script src="/js/bootstrap.min.js"></script>
-<script src="/js/TweenMax.min.js"></script>
-<script src="/js/resizeable.js"></script>
-<script src="/js/joinable.js"></script>
-<script src="/js/xenon-api.js"></script>
-<script src="/js/xenon-toggles.js"></script>
+<script src="{% static '/js/bootstrap.min.js' %}"></script>
+<script src="{% static '/js/TweenMax.min.js' %}"></script>
+<script src="{% static '/js/resizeable.js' %}"></script>
+<script src="{% static '/js/joinable.js' %}"></script>
+<script src="{% static '/js/xenon-api.js' %}"></script>
+<script src="{% static '/js/xenon-toggles.js' %}"></script>
 <!-- JavaScripts initializations and stuff -->
-<script src="/js/xenon-custom.js"></script>
+<script src="{% static '/js/xenon-custom.js' %}"></script>
 </body>
 
 </html>

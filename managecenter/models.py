@@ -22,10 +22,12 @@ class BaseModel(models.Model):
 class WebSiteType(BaseModel):
     """网址类型"""
     name = models.CharField(max_length=250)
+    icon = models.CharField(max_length=100)
+    rank = models.IntegerField(default=0)
 
     class Meta:
         db_table = 'website-type'
-        ordering = ['-created_time']
+        ordering = ['rank']
 
     def __str__(self):
         return self.name
@@ -33,11 +35,10 @@ class WebSiteType(BaseModel):
 
 class WebSite(BaseModel):
     """网址"""
-    title = models.CharField(max_length=50)
+    title = models.CharField(max_length=50, unique=True)
     type = models.ForeignKey(WebSiteType, on_delete=models.CASCADE)
     url = models.CharField(max_length=250)
-    describe = models.TextField(null=True, blank=True)
-    picture_url = models.ImageField(
+    logo_url = models.ImageField(
         null=True,
         blank=True,
         upload_to='image',
