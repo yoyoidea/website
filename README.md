@@ -46,5 +46,5 @@ docker build -t website .
 5. 启动项目
 
 ```bash
-docker run --rm --name website -p 8080:8080 -d website
+docker run --rm --name website -p 80:80 -d website
 ```
