@@ -1,0 +1,67 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: website
+  namespace: dev
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: nfs
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: website
+  namespace: dev
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: website
+    spec:
+      containers:
+      - image: yoyocreate/website:0.0.1
+        name: website
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: /media
+          name: website
+      volumes:
+      - name: website
+        persistentVolumeClaim:
+          claimName: website
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: website
+  namespace: dev
+spec:
+  selector:
+    app: website
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: ClusterIP
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: website
+  namespace: dev
+spec:
+  rules:
+    - host: your.demon
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: website
+              servicePort: 80

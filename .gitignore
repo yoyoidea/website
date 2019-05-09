@@ -104,8 +104,9 @@ venv.bak/
 
 # mypy
 .mypy_cache/
-
-.gitignore
-.idea/
-
-/media/image/
+.idea
+.DS_Store
+managecenter/.DS_Store
+managecenter/static/.DS_Store
+managecenter/static/images/.DS_Store
+templates/

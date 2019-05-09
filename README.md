@@ -30,16 +30,21 @@ DATABASES = {
 python manage.py makemigrations
 python manage.py migrate
 ```
+3. 创建超级用户：
 
-3. 镜像构建：
+```bash
+python manage.py createsuperuser
+```
+
+4. 镜像构建：
 
 ```bash
 cd website
 docker build -t website .
 ```
 
-4. 启动项目
+5. 启动项目
 
 ```bash
-docker run -name website -p 8080:8080 -d website
+docker run --rm --name website -p 8080:8080 -d website
 ```

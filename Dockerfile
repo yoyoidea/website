@@ -1,14 +1,36 @@
-FROM python:3.6.4
+FROM ubuntu:16.04
 
-COPY ./entrypoint.sh /
+MAINTAINER Dockerfiles
 
-WORKDIR /usr/src/app
+WORKDIR /home/docker/code/website
 
-COPY . /usr/src/app
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y \
+	git \
+	python3 \
+	python3-dev \
+	libmysqlclient-dev \
+	python3-setuptools \
+	python3-pip \
+	nginx \
+	supervisor \
+	sqlite3 && \
+	pip3 install -U pip setuptools && \
+   rm -rf /var/lib/apt/lists/*
 
-ADD  .pip  /root/.pip
+# install uwsgi now because it takes a little while
+RUN pip3 install uwsgi
 
-RUN pip install -r requirements.txt
-RUN pip install gunicorn
+# setup all the configfiles
+RUN echo "daemon off;" >> /etc/nginx/nginx.conf
+COPY nginx-app.conf /etc/nginx/sites-available/default
+COPY supervisor-app.conf /etc/supervisor/conf.d/
 
-ENTRYPOINT ["/entrypoint.sh"]
+# add (the rest of) our code
+COPY . /home/docker/code/website/
+RUN pip3 install -r requirements.txt
+RUN python3 manage.py collectstatic --noinput
+
+EXPOSE 80
+CMD ["supervisord", "-n"]
