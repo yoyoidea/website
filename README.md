@@ -50,4 +50,9 @@ docker run --rm --name website -p 80:80 -d website
 ```
 
 6. 请求http://127.0.0.1/admin 输入步骤3中的账号和密码添加网站信息
+
  ![image](https://github.com/yoyoidea/website/raw/master/managecenter/static/images/website_admin.png)
+
+7. 最后访问http://127.0.0.1 的效果图如下：
+
+ ![image](https://github.com/yoyoidea/website/raw/master/managecenter/static/images/website.png)
